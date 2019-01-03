@@ -32,16 +32,16 @@ var addPersonToQueue = setTimeout(function tick() {
   addPersonToQueue = setTimeout(tick, randomInteger(MAX_SEC_ATM));
 }, randomInteger(MAX_SEC_ATM));
 
-function incrementAtmCounter(el) {
-  el.isFree = false;
-  el.count++;
-  el.el.innerHTML = el.count;
-  el.el.style.backgroundColor = 'red';
+function incrementAtmCounter(elem) {
+  elem.isFree = false;
+  elem.count++;
+  elem.el.innerHTML = elem.count;
+  elem.el.style.backgroundColor = 'red';
   queue.count--;
   queue.el.innerHTML = queue.count;
   setTimeout(function() {
-    el.el.style.backgroundColor = 'green';
-    el.isFree = true;
+    elem.el.style.backgroundColor = 'green';
+    elem.isFree = true;
   }, randomInteger(MAX_SEC_QUEUE));
 }
 
