@@ -13,9 +13,9 @@ EventEmitter.prototype = {
   emit: function(event) {
     for (var key in this.eventTable) {
       if (key === event) {
-        for (var i = 0; i < this.eventTable[key].length; i++) {
-          this.eventTable[key][i]();
-        }
+        this.eventTable[key].forEach(function(callback) {
+          callback();
+        });
       }
     }
   }

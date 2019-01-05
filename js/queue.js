@@ -14,6 +14,7 @@ Queue.prototype = Object.assign(EventEmitter.prototype, {
     var self = this;
     for (var i = 0; i < this.atmList.length; i++) {
       if (this.atmList[i].getIsFree() && this.count > 0) {
+        this.atmList[i].setFalse();
         setTimeout(function() {
           self.emit('removePerson');
           self.atmList[i].makeBusy();

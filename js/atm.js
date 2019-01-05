@@ -10,7 +10,6 @@ Atm.prototype = Object.assign(EventEmitter.prototype, {
     var self = this;
     this.emit('busy');
     this.count++;
-    this.isFree = false;
     setTimeout(function() {
       self.makeFree();
     }, randomInteger(1000, 3000));
@@ -21,6 +20,9 @@ Atm.prototype = Object.assign(EventEmitter.prototype, {
   },
   getIsFree: function() {
     return this.isFree;
+  },
+  setFalse: function() {
+    this.isFree = false;
   }
 });
 Atm.prototype.constructor = Atm;
