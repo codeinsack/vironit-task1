@@ -1,16 +1,30 @@
 function Queue() {
-  this.count = 10;
+  EventEmitter.call(this);
+  this.count = 0;
+  this.atmList = [];
 }
 
-Queue.prototype = {
-  update: function(emitter) {
-    setTimeout(function() {
-      emitter.makeBusy();
-      this.count--;
-    }, 1000);
-  },
+Queue.prototype = Object.assign(EventEmitter.prototype, {
   addPerson: function() {
+    this.emit('addPerson');
     this.count++;
-    console.log(`Queue.addPerson() ${this.count}`);
+    this.sendPersonToAtm();
+  },
+  sendPersonToAtm: function() {
+    var self = this;
+    for (var i = 0; i < this.atmList.length; i++) {
+      if (this.atmList[i].getIsFree() && this.count > 0) {
+        setTimeout(function() {
+          self.emit('removePerson');
+          self.atmList[i].makeBusy();
+          self.count--;
+        }, 1000);
+        break;
+      }
+    }
+  },
+  addAtm: function(atm) {
+    this.atmList.push(atm);
   }
-};
+});
+Queue.prototype.constructor = Queue;

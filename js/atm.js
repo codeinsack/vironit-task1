@@ -5,22 +5,22 @@ function Atm(name) {
   this.name = name;
 }
 
-Atm.prototype = {
+Atm.prototype = Object.assign(EventEmitter.prototype, {
   makeBusy: function() {
+    var self = this;
+    this.emit('busy');
     this.count++;
     this.isFree = false;
-    var self = this;
-    console.log(`Atm.makeBusy() ${this.name} ${this.count}`);
     setTimeout(function() {
       self.makeFree();
     }, randomInteger(1000, 3000));
   },
   makeFree: function() {
-    this.isFree = true;
     this.emit('free');
-    console.log(`Atm.makeFree() ${this.name} ${this.count}`);
+    this.isFree = true;
+  },
+  getIsFree: function() {
+    return this.isFree;
   }
-};
-
-Atm.prototype = Object.create(EventEmitter.prototype);
+});
 Atm.prototype.constructor = Atm;
