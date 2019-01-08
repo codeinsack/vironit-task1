@@ -21,17 +21,36 @@
       .queue {
         background-color: blue;
       }
+      #btnAddAtm {
+        position: fixed;
+        margin-left: 200px;
+        display: inline-block;
+        padding: 0.25rem 1rem;
+        text-decoration: none;
+        font: inherit;
+        font-size: 20px;
+        border: 1px solid #00695c;
+        color: #00695c;
+        background: white;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+      #btnAddAtm:hover,
+      #btnAddAtm:active {
+        background-color: #00695c;
+        color: white;
+      }
     </style>
   </head>
   <body>
-    <div class="rect atm atm1">0</div>
-    <div class="rect atm atm2">0</div>
-    <div class="rect queue">0</div>
-    <script src="js/observable.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/component.js"></script>
-    <script src="js/atm.js"></script>
-    <script src="js/queue.js"></script>
-    <script src="js/main.js"></script>
+    <script src="components/main.js"></script>
+    <script src="components/queue.js"></script>
+    <script src="components/atm.js"></script>
+    <script src="components/btnAddAtm.js"></script>
+    <script src="observable.js"></script>
+    <script src="utils.js"></script>
+    <script src="atm.js"></script>
+    <script src="queue.js"></script>
+    <script src="main.js"></script>
   </body>
 </html>
