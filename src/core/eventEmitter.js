@@ -20,3 +20,5 @@ EventEmitter.prototype = {
     }
   }
 };
+
+module.exports = EventEmitter;

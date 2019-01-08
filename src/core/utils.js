@@ -5,7 +5,10 @@ function randomInteger(min, max) {
 
 function queueGenerator(queue) {
   setTimeout(function() {
-    queue.addPerson();
+    queue.add();
     queueGenerator(queue);
-  }, randomInteger(1000, 2000));
+  }, randomInteger(2000, 4000));
 }
+
+module.exports.randomInteger = randomInteger;
+module.exports.queueGenerator = queueGenerator;

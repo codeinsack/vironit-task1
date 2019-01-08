@@ -1,3 +1,6 @@
+var utils = require('./utils');
+var EventEmitter = require('./eventEmitter');
+
 function Atm() {
   EventEmitter.call(this);
   Atm.count++;
@@ -13,22 +16,21 @@ Atm.prototype.constructor = Atm;
 
 Atm.prototype.makeBusy = function() {
   var self = this;
-  this.emit('busy');
-  this.count++;
+  this.isFree = false;
   setTimeout(function() {
-    self.makeFree();
-  }, randomInteger(1000, 3000));
+    self.count++;
+    self.emit('busy');
+    console.log(`${self.name} is busy, count: ${self.count}`);
+    setTimeout(function() {
+      self.makeFree();
+    }, utils.randomInteger(1000, 3000));
+  }, 1000);
 };
 
 Atm.prototype.makeFree = function() {
   this.emit('free');
   this.isFree = true;
+  console.log(`${this.name} is free, count: ${this.count}`);
 };
 
-Atm.prototype.getIsFree = function() {
-  return this.isFree;
-};
-
-Atm.prototype.setFalse = function() {
-  this.isFree = false;
-};
+module.exports = Atm;
