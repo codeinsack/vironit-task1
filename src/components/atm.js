@@ -1,6 +1,7 @@
 var Component = require('./component');
 
 function AtmComponent(id, html) {
+  // Конструктор Component принимает еще и параметры
   Component.call(this);
   this.render(id, html);
 }

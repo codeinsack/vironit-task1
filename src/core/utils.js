@@ -10,6 +10,7 @@ function queueGenerator(queue) {
   }, randomInteger(2000, 4000));
 }
 
+// есть Array.prototype.find, который возвращает найденный элемент или undefined
 function findFreeAtm(atms, queue) {
   for (var i = 0; i < atms.length; i++) {
     if (atms[i].isFree && queue.count > 0) {

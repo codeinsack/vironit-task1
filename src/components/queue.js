@@ -1,6 +1,7 @@
 var Component = require('./component');
 
 function QueueComponent(html, params) {
+  // делает тоже самое что и родитель? зачем дублировать код?
   this.html = html;
   this.params = params;
   this.makeHtml();

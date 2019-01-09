@@ -5,6 +5,7 @@ var QueueComponent = require('./components/queue');
 var AtmComponent = require('./components/atm');
 
 var queue = new Queue();
+// Array(initialCountOfAtms).fill(new Atm()) было бы лучше.
 var atms = [new Atm(), new Atm()];
 
 var queueHtml = `<div id={{id}} class="{{class}}">{{count}}</div>`;
