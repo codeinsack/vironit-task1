@@ -16,21 +16,16 @@ Atm.prototype.constructor = Atm;
 
 Atm.prototype.makeBusy = function() {
   var self = this;
-  this.isFree = false;
+  this.count++;
+  this.emit('busy');
   setTimeout(function() {
-    self.count++;
-    self.emit('busy');
-    console.log(`${self.name} is busy, count: ${self.count}`);
-    setTimeout(function() {
-      self.makeFree();
-    }, utils.randomInteger(1000, 3000));
-  }, 1000);
+    self.makeFree();
+  }, utils.randomInteger(1000, 3000));
 };
 
 Atm.prototype.makeFree = function() {
-  this.emit('free');
   this.isFree = true;
-  console.log(`${this.name} is free, count: ${this.count}`);
+  this.emit('free');
 };
 
 module.exports = Atm;

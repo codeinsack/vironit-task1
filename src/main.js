@@ -1,5 +1,4 @@
 var utils = require('./core/utils');
-var EventEmitter = require('./core/eventEmitter');
 var Atm = require('./core/atm');
 var Queue = require('./core/queue');
 var QueueComponent = require('./components/queue');
@@ -8,32 +7,19 @@ var AtmComponent = require('./components/atm');
 var queue = new Queue();
 var atms = [new Atm(), new Atm()];
 
-var queueHtml = `<div id="queue" class="rect queue">0</div>`;
-var atmHtml1 = `<div class="rect atm atm1">0</div>`;
-var atmHtml2 = `<div class="rect atm atm2">0</div>`;
-var queueComponent = new QueueComponent('queue', queueHtml);
-var atmComponents = [new AtmComponent('atm1', atmHtml1), new AtmComponent('atm2', atmHtml2)];
+var queueHtml = `<div id={{id}} class="{{class}}">{{count}}</div>`;
+var queueParams = {
+  classes: ['rect', 'queue'],
+  count: queue.count,
+  parent: document.body,
+  id: 'queue'
+};
+var queueComponent = new QueueComponent(queueHtml, queueParams);
 
-queue.on('add', findFreeAtm);
-queue.on(
-  'add',
-  queueComponent.render.bind(queueComponent, 'queue', `<div id='queue' class="rect queue">${queue.count}</div>`)
-);
-
+queue.on('add', queueComponent.updateParams.bind(queueComponent, queueParams));
+queue.on('add', utils.findFreeAtm.bind(null, atms, queue));
 atms.forEach(function(atm) {
-  atm.on('free', queue.add.bind(queue, atm));
+  atm.on('free', utils.findFreeAtm.bind(null, atms, queue));
 });
-// debugger;
-utils.queueGenerator(queue);
 
-function findFreeAtm() {
-  for (var i = 0; i < atms.length; i++) {
-    if (atms[i].isFree && queue.count > 0) {
-      atms[i].makeBusy();
-      setTimeout(function() {
-        queue.remove();
-      }, 1000);
-      break;
-    }
-  }
-}
+utils.queueGenerator(queue);

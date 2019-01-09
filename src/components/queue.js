@@ -1,8 +1,9 @@
 var Component = require('./component');
 
-function QueueComponent(id, html) {
-  Component.call(this);
-  this.render(id, html);
+function QueueComponent(html, params) {
+  this.html = html;
+  this.params = params;
+  this.makeHtml();
 }
 
 QueueComponent.prototype = Object.create(Component.prototype);
