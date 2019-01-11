@@ -4,6 +4,7 @@ var Queue = require('./core/queue');
 var QueueComponent = require('./components/queue');
 var AtmComponent = require('./components/atm');
 var ButtonComponent = require('./components/button');
+var eventEmitter = require('./core/eventEmitter');
 
 var queue = new Queue();
 var atms = Array(2)
@@ -55,16 +56,21 @@ function makeAtmParams(atm, i) {
 
 function subscribeToAtm(lastIndex) {
   for (var i = lastIndex; i < atms.length; i++) {
-    atms[i].on('free', utils.findFreeAtm.bind(null, atms, queue));
-    atms[i].on('busy', atmComponents[i].updateParams.bind(atmComponents[i]));
-    atms[i].on('free', atmComponents[i].updateParams.bind(atmComponents[i], { classes: ['rect', 'queue', 'green'] }));
-    atms[i].on('busy', atmComponents[i].updateParams.bind(atmComponents[i], { classes: ['rect', 'queue', 'red'] }));
+    eventEmitter.on('free', utils.findFreeAtm.bind(null, atms, queue, atms[i]));
+    eventEmitter.on('busy', atmComponents[i].updateParams.bind(atmComponents[i], atms[i]));
+    eventEmitter.on(
+      'free',
+      atmComponents[i].updateParams.bind(atmComponents[i], { classes: ['rect', 'queue', 'green'] }, atms[i])
+    );
+    eventEmitter.on(
+      'busy',
+      atmComponents[i].updateParams.bind(atmComponents[i], { classes: ['rect', 'queue', 'red'] }, atms[i])
+    );
   }
 }
 
 subscribeToAtm(0);
-queue.on('add', queueComponent.updateParams.bind(queueComponent));
-queue.on('remove', queueComponent.updateParams.bind(queueComponent));
-queue.on('add', utils.findFreeAtm.bind(null, atms, queue));
-
+eventEmitter.on('add', queueComponent.updateParams.bind(queueComponent));
+eventEmitter.on('remove', queueComponent.updateParams.bind(queueComponent));
+eventEmitter.on('add', utils.findFreeAtm.bind(null, atms, queue));
 utils.queueGenerator(queue);

@@ -1,5 +1,10 @@
+var eeInstance = null;
 function EventEmitter() {
-  this.eventTable = {};
+  if (!eeInstance) {
+    this.eventTable = {};
+    eeInstance = this;
+  }
+  return eeInstance;
 }
 
 EventEmitter.prototype = {
@@ -21,4 +26,4 @@ EventEmitter.prototype = {
   }
 };
 
-module.exports = EventEmitter;
+module.exports = new EventEmitter();
