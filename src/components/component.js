@@ -1,5 +1,4 @@
-function Component(html, params) {
-  this.html = html;
+function Component(params) {
   this.params = params;
   this.makeHtml();
 }
@@ -13,23 +12,25 @@ Component.prototype = {
       el.outerHTML = html;
     }
   },
-  // а если не каждый раз ты передаешь все параметры? видимо нужно объединять со старыми
   updateParams: function(params) {
-    this.params = Object.assign({}, params);
+    for (var prop in params) {
+      if (params.hasOwnProperty(prop)) {
+        this.params[prop] = params[prop];
+      }
+    }
     this.makeHtml();
   },
   makeHtml: function() {
+    this.html = `<{{element}} id="{{id}}" class="{{class}}">{{content}}</{{element}}>`;
     var classesString = this.params.classes
       .reduce(function(accum, current) {
         return `${accum} ${current}`;
       }, '')
       .trim();
+    this.html = this.html.replace('{{element}}', this.params.element);
     this.html = this.html.replace('{{class}}', classesString);
-    // у всех ли компонентов будет в параметрах count?
-    // скорее всего придется какую-то часть makeHtml реализовывать в дочерних классах
-    this.html = this.html.replace('{{count}}', this.params.count);
     this.html = this.html.replace('{{id}}', this.params.id);
-    this.render(this.html);
+    this.html = this.html.replace('{{content}}', this.params.content);
   }
 };
 

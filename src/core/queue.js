@@ -9,14 +9,13 @@ Queue.prototype = Object.create(EventEmitter.prototype);
 Queue.prototype.constructor = Queue;
 
 Queue.prototype.add = function() {
-  var self = this;
   this.count++;
-  self.emit('add');
+  this.emit('add', { content: this.count });
 };
 
 Queue.prototype.remove = function() {
   this.count--;
-  this.emit('remove');
+  this.emit('remove', { content: this.count });
 };
 
 module.exports = Queue;

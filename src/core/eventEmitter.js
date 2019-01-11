@@ -10,11 +10,11 @@ EventEmitter.prototype = {
     this.eventTable[event].push(callback);
   },
 
-  emit: function(event) {
+  emit: function(event, ...rest) {
     for (var key in this.eventTable) {
       if (key === event) {
         this.eventTable[key].forEach(function(callback) {
-          callback();
+          callback.apply(null, rest);
         });
       }
     }
