@@ -7,7 +7,7 @@ function queueGenerator(queue) {
   setTimeout(function() {
     queue.add();
     queueGenerator(queue);
-  }, randomInteger(2000, 4000));
+  }, randomInteger(500, 1000));
 }
 
 function findFreeAtm(atms, queue) {
@@ -17,6 +17,7 @@ function findFreeAtm(atms, queue) {
 
   if (freeAtm) {
     freeAtm.isFree = false;
+    freeAtm.emit('hideCross');
     setTimeout(function() {
       queue.remove();
       freeAtm.makeBusy();

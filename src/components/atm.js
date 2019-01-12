@@ -1,6 +1,8 @@
 var Component = require('./component');
+var crossComponent = require('./cross');
 
 function AtmComponent(params) {
+  this.cross = crossComponent();
   Component.call(this, params);
 }
 
@@ -9,10 +11,7 @@ AtmComponent.prototype.constructor = AtmComponent;
 
 AtmComponent.prototype.makeHtml = function() {
   Component.prototype.makeHtml.call(this);
-  // this.html = this.html.replace(
-  //   />\d</,
-  //   `>${`${this.params.content}<span id="${this.params.id}close" class="close"></span>`}<`
-  // );
+  this.html = this.html.replace(/>\d+</, `>${this.params.content}${this.cross}<`);
   this.render(this.html);
 };
 

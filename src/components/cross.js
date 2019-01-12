@@ -1,15 +1,7 @@
-var Component = require('./component');
+var uniqid = require('uniqid');
 
-function CrossComponent(params) {
-  Component.call(this, params);
+function crossComponent() {
+  return `<span id="${uniqid()}" class="close"></span>`;
 }
 
-CrossComponent.prototype = Object.create(Component.prototype);
-CrossComponent.prototype.constructor = CrossComponent;
-
-CrossComponent.prototype.makeHtml = function() {
-  Component.prototype.makeHtml.call(this);
-  this.render(this.html);
-};
-
-module.exports = CrossComponent;
+module.exports = crossComponent;
