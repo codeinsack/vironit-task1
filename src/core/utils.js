@@ -3,11 +3,11 @@ function randomInteger(min, max) {
   return Math.floor(rand);
 }
 
-function queueGenerator(queue) {
-  setTimeout(function() {
+function queueGenerator(queue, min, max, timerId) {
+  timerId.timer = setTimeout(function() {
     queue.add();
-    queueGenerator(queue);
-  }, randomInteger(500, 1000));
+    queueGenerator(queue, min, max, timerId);
+  }, randomInteger(min, max));
 }
 
 function findFreeAtm(atms, queue) {
