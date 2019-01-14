@@ -95,9 +95,8 @@ queue.on('add', utils.findFreeAtm.bind(null, atms, queue));
 queue.on('add', queueComponent.updateParams.bind(queueComponent));
 queue.on('remove', queueComponent.updateParams.bind(queueComponent));
 queue.on('add', getQueueLength);
-queue.on('remove', getQueueLength);
-queue.on('add', startTimer);
-queue.on('remove', stopTimer);
+queue.on('add', stopTimer);
+queue.on('remove', startTimer);
 
 utils.queueGenerator(queue, 2000, 4000, timerId);
 
@@ -114,8 +113,8 @@ function makeAtmParams(atm, i) {
 function subscribeToAtm(lastIndex) {
   for (var i = lastIndex; i < atms.length; i++) {
     atms[i].on('busy', atmComponents[i].updateParams.bind(atmComponents[i]));
-    atms[i].on('busy', atmComponents[i].updateParams.bind(atmComponents[i], { classes: ['rect', 'queue', 'red'] }));
-    atms[i].on('free', atmComponents[i].updateParams.bind(atmComponents[i], { classes: ['rect', 'queue', 'green'] }));
+    atms[i].on('busy', atmComponents[i].updateParams.bind(atmComponents[i], { classes: ['rect', 'atm', 'red'] }));
+    atms[i].on('free', atmComponents[i].updateParams.bind(atmComponents[i], { classes: ['rect', 'atm', 'green'] }));
     atms[i].on('busy', atmComponents[i].hideCross.bind(atmComponents[i]));
     atms[i].on('free', atmComponents[i].showCross.bind(atmComponents[i]));
   }
@@ -126,20 +125,21 @@ function createNewAtm() {
   var index = atms.length - 1;
   atmComponents.push(new AtmComponent(makeAtmParams(atms[index], index)));
   subscribeToAtm(index);
-  utils.findFreeAtm(atms, queue);
 }
 
 function deleteLastAtm() {
-  var atmElements = document.querySelectorAll('atm');
-  var lastIndex = atmElements.length - 1;
-  atmElements[lastIndex].remove();
-  atms.splice(lastIndex1, 1);
-  atmComponents.splice(lastIndex, 1);
+  if (atms.length > 1) {
+    var elems = document.querySelectorAll('.atm');
+    var lastIndex = elems.length - 1;
+    elems[lastIndex].remove();
+    atms.splice(lastIndex, 1);
+    atmComponents.splice(lastIndex, 1);
+  }
 }
 
 function startTimer() {
   tmrId = setTimeout(function() {
-    console.log('4 секунды бездействия');
+    deleteLastAtm();
   }, 4000);
 }
 
@@ -151,13 +151,8 @@ function getQueueLength() {
   new Promise(function(resolve, reject) {
     if (queue.count === 10) {
       resolve();
-    } else if (!queue.count) {
     }
-  })
-    .then(function() {
-      createNewAtm();
-    })
-    .catch(function() {
-      deleteLastAtm();
-    });
+  }).then(function() {
+    createNewAtm();
+  });
 }
