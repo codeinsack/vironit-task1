@@ -11,6 +11,8 @@ EventEmitter.prototype = {
   },
 
   emit: function(event, ...rest) {
+  // а зачем перебор по всем ключам, если достаточно проверить наличие ключа event
+  // в eventTable и вызвать все коллбеки
     for (var key in this.eventTable) {
       if (key === event) {
         this.eventTable[key].forEach(function(callback) {

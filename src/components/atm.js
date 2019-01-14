@@ -2,6 +2,7 @@ var Component = require('./component');
 var crossComponent = require('./cross');
 
 function AtmComponent(params) {
+  // ну вот компонент cross есть, а функции hideCross и showCross где-то в другом месте
   this.cross = crossComponent();
   Component.call(this, params);
 }

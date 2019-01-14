@@ -115,11 +115,14 @@ function subscribeToAtm(lastIndex) {
     atms[i].on('busy', atmComponents[i].updateParams.bind(atmComponents[i]));
     atms[i].on('busy', atmComponents[i].updateParams.bind(atmComponents[i], { classes: ['rect', 'queue', 'red'] }));
     atms[i].on('free', atmComponents[i].updateParams.bind(atmComponents[i], { classes: ['rect', 'queue', 'green'] }));
+    // вот тут можно было подписаться и на старые события 'busy' и 'free' соответственно, это не принципиально,
+    // но откуда логическому АТМ известно, что нужно какой-то кросс добавлять или удалять
     atms[i].on('hideCross', hideCross.bind(null, atms[i]));
     atms[i].on('showCross', showCross.bind(null, atms[i]));
   }
 }
 
+// эти 2 функции можно было бы сделать как методы компонента АТМ
 function hideCross(atm) {
   document.getElementById(atm.id).getElementsByTagName('span')[0].style.display = 'none';
 }
@@ -129,6 +132,10 @@ function showCross(atm) {
 }
 
 setInterval(function() {
+  // что-то я не понял, setInterval через 0 секунд? он же будет постоянно крутиться
+  // е если тебе нужно запустить процесс по обработке клиента, то можно было подписаться на событие 'add'
+  // у логической очереди. У тебя же весь процесс запускается в твоем utils.queueGenerator()... могу ошибаться,
+  // но вроде как его достаточно, для запуска всего механизма
   var allAtmsAreFree = atms.every(function(atm) {
     return atm.isFree;
   });
