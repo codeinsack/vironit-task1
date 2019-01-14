@@ -16,4 +16,14 @@ AtmComponent.prototype.makeHtml = function() {
   this.render(this.html);
 };
 
+AtmComponent.prototype.hideCross = function() {
+  var id = this.cross.slice(10, 18);
+  document.getElementById(id).style.display = 'none';
+};
+
+AtmComponent.prototype.showCross = function() {
+  var id = this.cross.slice(10, 18);
+  document.getElementById(id).style.display = 'block';
+};
+
 module.exports = AtmComponent;

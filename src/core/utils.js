@@ -16,9 +16,7 @@ function findFreeAtm(atms, queue) {
   });
 
   if (freeAtm) {
-    // у тебя же есть метод makeBusy, к чему тогда эти 2 строки?
     freeAtm.isFree = false;
-    freeAtm.emit('hideCross');
     setTimeout(function() {
       queue.remove();
       freeAtm.makeBusy();
