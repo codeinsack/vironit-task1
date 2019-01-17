@@ -28,15 +28,14 @@ Component.prototype.updateParams = function(params) {
 };
 
 Component.prototype.makeHtml = function() {
-  this.html = `<{{element}} id="{{id}}" class="{{class}}">{{content}}</{{element}}>`;
+  this.html = `<div id="{{id}}" class="{{class}}">{{content}}</div>`;
   var classesString = this.params.classes
     .reduce(function(accum, current) {
       return `${accum} ${current}`;
     }, '')
     .trim();
-  this.html = this.html.replace('{{element}}', this.params.element);
-  this.html = this.html.replace('{{class}}', classesString);
   this.html = this.html.replace('{{id}}', this.params.id);
+  this.html = this.html.replace('{{class}}', classesString);
   this.html = this.html.replace('{{content}}', this.params.content);
 };
 

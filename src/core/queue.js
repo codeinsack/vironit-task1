@@ -14,7 +14,6 @@ Queue.prototype.add = function() {
 };
 
 Queue.prototype.remove = function() {
-  this.count--;
   this.emit('remove', { content: this.count });
 };
 
