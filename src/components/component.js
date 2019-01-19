@@ -1,42 +1,32 @@
-var EventEmitter = require('../core/eventEmitter');
+var EventEmitter = require('../core/eventEmitter')
 
-function Component(params) {
-  EventEmitter.call(this);
-  this.params = params;
-  this.makeHtml();
+function Component () {
+  EventEmitter.call(this)
+  this.element = strToDOM(this.render())
+
+  function strToDOM (htmlString) {
+    var [ , openTag, content ] = /<(.*?|(?:.*?\n)+.*?)>(.*?|(?:.*?\n)+.*?)<\/.+?>/.exec(htmlString)
+    var tagName = /\w+/.exec(openTag)
+    var element = document.createElement(tagName)
+    var reParams = /([\w|-]+)="(.*?|(?:.*?\n?)+.*?)"/g
+    var reParamsExecResult
+    while ((reParamsExecResult = reParams.exec(openTag))) {
+      element.setAttribute(reParamsExecResult[1], reParamsExecResult[2])
+    }
+    element.innerHTML = content.trim()
+    return element
+  }
 }
 
-Component.prototype = Object.create(EventEmitter.prototype);
-Component.prototype.constructor = Component;
+Component.prototype = Object.create(EventEmitter.prototype)
+Component.prototype.constructor = Component
 
-Component.prototype.render = function(html) {
-  var el = document.getElementById(this.params.id);
-  if (!el) {
-    this.params.parent.innerHTML += html;
-  } else {
-    el.outerHTML = html;
-  }
-};
+Component.prototype.increment = function () {
+  this.element.childNodes[0].nodeValue = parseInt(this.element.childNodes[0].nodeValue) + 1
+}
 
-Component.prototype.updateParams = function(params) {
-  for (var prop in params) {
-    if (params.hasOwnProperty(prop)) {
-      this.params[prop] = params[prop];
-    }
-  }
-  this.makeHtml();
-};
+Component.prototype.decrement = function () {
+  this.element.childNodes[0].nodeValue = parseInt(this.element.childNodes[0].nodeValue) - 1
+}
 
-Component.prototype.makeHtml = function() {
-  this.html = `<div id="{{id}}" class="{{class}}">{{content}}</div>`;
-  var classesString = this.params.classes
-    .reduce(function(accum, current) {
-      return `${accum} ${current}`;
-    }, '')
-    .trim();
-  this.html = this.html.replace('{{id}}', this.params.id);
-  this.html = this.html.replace('{{class}}', classesString);
-  this.html = this.html.replace('{{content}}', this.params.content);
-};
-
-module.exports = Component;
+module.exports = Component

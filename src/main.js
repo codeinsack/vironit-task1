@@ -1,132 +1,123 @@
-var uniqid = require('uniqid');
-var QueueComponent = require('./components/queue');
-var AtmComponent = require('./components/atm');
-var RangeComponent = require('./components/range');
-var AddComponent = require('./components/add');
-var utils = require('./core/utils');
-var timer = { id: null };
-// var timerId = null;
+require('./main.css')
+var utils = require('./core/utils')
+var queueGeneratorTimer = null
+var queueOverflowTimer = null
 
-var queueComponent = new QueueComponent({
-  classes: ['rect', 'queue'],
-  id: uniqid(),
-  content: 0,
-  parent: document.querySelector('.container__left')
-});
+var QueueComponent = require('./components/queue')
+var AtmComponent = require('./components/atm')
+var AddComponent = require('./components/add')
+var RangeComponent = require('./components/range')
 
-var atmComponents = Array(2)
+var leftContainer = document.querySelector('.container__left')
+var rightContainer = document.querySelector('.container__right')
+
+var queueComponent = new QueueComponent()
+leftContainer.appendChild(queueComponent.element)
+
+var atmComponents = Array(3)
   .fill(null)
-  .map(function() {
-    return new AtmComponent({
-      classes: ['rect', 'atm'],
-      id: uniqid(),
-      content: 0,
-      parent: document.querySelector('.container__left')
-    });
-  });
+  .map(function () {
+    var atmComponent = new AtmComponent()
+    atmComponent.on('CloseComponent_Click', deleteAtm.bind(atmComponent))
+    atmComponent.core.on('Atm_MakeFree', findFreeAtm.bind(atmComponent))
+    leftContainer.appendChild(atmComponent.element)
+    return atmComponent
+  })
+queueComponent.core.on('Queue_Add', findFreeAtm)
+queueComponent.core.on('Queue_Add', checkQueueLength)
+queueComponent.core.on('Queue_Remove', startTimer)
 
-var addComponent = new AddComponent({
-  classes: ['btn', 'btn-add'],
-  id: 'addAtm',
-  content: 'Add ATM',
-  parent: document.querySelector('.container__right')
-});
+var addComponent = new AddComponent()
+addComponent.on('AddComponent_Click', addAtm)
+rightContainer.appendChild(addComponent.element)
 
 var rangeComponents = Array(2)
   .fill(null)
-  .map(function(el, i) {
-    return new RangeComponent({
-      classes: i === 0 ? ['range', 'range-start'] : ['range', 'range-end'],
-      id: uniqid(),
-      content: '',
-      parent: document.querySelector('.container__right'),
-      value: i === 0 ? 2 : 4
-    });
-  });
+  .map(function () {
+    var rangeComponent = new RangeComponent()
+    rangeComponent.on('RangeComponent_Change', changeRange.bind(null, rangeComponent))
+    rightContainer.appendChild(rangeComponent.element)
+    return rangeComponent
+  })
 
-document.getElementById(addComponent.params.id).addEventListener('click', function() {
-  createNewAtm();
-});
+queueGenerator(rangeComponents[0].input.value * 1000, rangeComponents[1].input.value * 1000)
 
-document.querySelector('.container__left').addEventListener('click', function(event) {
-  if (event.target.tagName === 'SPAN') {
-    var id = event.target.parentElement.id;
-    for (var i = 0; i < atmComponents.length; i++) {
-      if (atmComponents[i].params.id === id) {
-        atmComponents.splice(i, 1);
-      }
-    }
-    event.target.parentElement.remove();
-  }
-});
-
-document.querySelector('.container__right').addEventListener('click', function(event) {
-  var min = document.querySelector('.range-start').querySelector('label').innerHTML;
-  var max = document.querySelector('.range-end').querySelector('label').innerHTML;
-  var labelValue = parseInt(event.target.closest('div').querySelector('label').innerHTML);
-  var labelElement = event.target.closest('div').querySelector('label');
-  if (event.target.innerHTML === '-') {
-    labelElement.innerHTML = labelValue - 1;
-    if (labelElement.innerHTML < 0) {
-      labelElement.innerHTML = 0;
-    }
-    clearTimeout(timer.id);
-    utils.queueGenerator(queueComponent.queue, min, max, timer);
-  } else if (event.target.innerHTML === '+') {
-    labelElement.innerHTML = labelValue + 1;
-    clearTimeout(timer.id);
-    utils.queueGenerator(queueComponent.queue, min, max, timer);
-  }
-});
-
-queueComponent.queue.on('add', queueComponent.updateParams.bind(queueComponent));
-queueComponent.queue.on('add', utils.findFreeAtm.bind(null, atmComponents, queueComponent));
-queueComponent.queue.on('remove', queueComponent.updateParams.bind(queueComponent));
-queueComponent.queue.on('add', getQueueLength);
-// queueComponent.queue.on('add', stopTimer);
-// queueComponent.queue.on('remove', startTimer);
-utils.subscribeATMs(atmComponents, queueComponent);
-
-utils.queueGenerator(queueComponent.queue, rangeComponents[0].value, rangeComponents[1].value, timer);
-
-function getQueueLength() {
-  new Promise(function(resolve) {
-    if (queueComponent.queue.count === 10) {
-      resolve();
-    }
-  }).then(function() {
-    createNewAtm();
-  });
+function queueGenerator (min, max) {
+  queueGeneratorTimer = setTimeout(function () {
+    queueComponent.core.add()
+    queueGenerator(min, max)
+  }, utils.randomInteger(min, max))
 }
 
-function createNewAtm() {
-  atmComponents.push(
-    new AtmComponent({
-      classes: ['rect', 'atm'],
-      id: uniqid(),
-      content: 0,
-      parent: document.querySelector('.container__left')
+function findFreeAtm () {
+  setTimeout(function () {
+    if (!atmComponents) return
+    var freeAtm = atmComponents.find(function (atmComponent) {
+      return atmComponent.core.isFree && queueComponent.core.count > 0
     })
-  );
-  var lastIndex = atmComponents.length - 1;
-  utils.subscribeATMs(atmComponents, queueComponent, lastIndex);
+    if (freeAtm) {
+      queueComponent.core.remove()
+      freeAtm.core.makeBusy()
+    }
+  }, 1000)
 }
 
-// function deleteLastAtm() {
-//   var index = atmComponents.length - 1;
-//   var id = atmComponents[index].params.id;
-//   atmComponents.splice(index, 1);
-//   document.getElementById(id).remove();
-// }
+function deleteAtm (deleteAtm) {
+  for (var i = 0; i < atmComponents.length; i++) {
+    if (deleteAtm.id === atmComponents[i].id) {
+      atmComponents.splice(i, 1)
+    }
+  }
+}
 
-// function startTimer() {
-//   timerId = setTimeout(function() {
-//     if (atmComponents.length > 1) {
-//       deleteLastAtm();
-//     }
-//   }, 4000);
-// }
+function addAtm () {
+  clearInterval(queueOverflowTimer)
+  var newAtm = new AtmComponent()
+  newAtm.on('CloseComponent_Click', deleteAtm)
+  newAtm.core.on('Atm_MakeFree', findFreeAtm)
+  leftContainer.appendChild(newAtm.element)
+  atmComponents.push(newAtm)
+  findFreeAtm()
+}
 
-// function stopTimer() {
-//   clearTimeout(timerId);
-// }
+function changeRange (range) {
+  var rangeMinElement, rangeMaxElement
+  if (Array.from(range.element.classList).indexOf('range-min') !== -1) {
+    rangeMinElement = range.input
+    rangeMaxElement = range.element.nextSibling.querySelector('input')
+    if (rangeMinElement.value >= rangeMaxElement.value) {
+      rangeMaxElement.value = parseInt(rangeMinElement.value) + 1
+      rangeMaxElement.previousSibling.previousSibling.innerHTML = rangeMaxElement.value
+    }
+  } else {
+    rangeMaxElement = range.input
+    rangeMinElement = range.element.previousSibling.querySelector('input')
+    if (rangeMaxElement.value <= rangeMinElement.value) {
+      rangeMinElement.value = parseInt(rangeMaxElement.value) - 1
+      rangeMinElement.previousSibling.previousSibling.innerHTML = rangeMinElement.value
+    }
+  }
+  clearInterval(queueGeneratorTimer)
+  queueGenerator(rangeMinElement.value * 1000, rangeMaxElement.value * 1000)
+}
+
+function checkQueueLength () {
+  if (queueComponent.core.count > 10) {
+    addAtm()
+  }
+}
+
+function startTimer () {
+  clearInterval(queueOverflowTimer)
+  queueOverflowTimer = setTimeout(function () {
+    deleteLastAtm()
+    startTimer()
+  }, 5000)
+}
+
+function deleteLastAtm () {
+  var index = atmComponents.length - 1
+  if (index < 1) return
+  atmComponents[index].element.remove()
+  atmComponents.splice(index, 1)
+}

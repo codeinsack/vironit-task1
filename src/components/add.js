@@ -1,16 +1,21 @@
-var Component = require('./component');
+var Component = require('./component')
 
-function AddComponent(params) {
-  Component.call(this, params);
+function AddComponent () {
+  Component.call(this)
+  this.element.addEventListener('click', this.handleClick.bind(this))
 }
 
-AddComponent.prototype = Object.create(Component.prototype);
-AddComponent.prototype.constructor = AddComponent;
+AddComponent.prototype = Object.create(Component.prototype)
+AddComponent.prototype.constructor = AddComponent
 
-AddComponent.prototype.makeHtml = function() {
-  Component.prototype.makeHtml.call(this);
-  this.html = this.html.replace(/div/g, 'button');
-  this.render(this.html);
-};
+AddComponent.prototype.render = function () {
+  return `<button class="btn btn-add">
+            Add ATM
+          </button>`
+}
 
-module.exports = AddComponent;
+AddComponent.prototype.handleClick = function () {
+  this.emit('AddComponent_Click')
+}
+
+module.exports = AddComponent

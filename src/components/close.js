@@ -1,7 +1,20 @@
-var uniqid = require('uniqid');
+var Component = require('./component')
 
-function closeComponent() {
-  return `<span href="#" id="${uniqid()}" class="close"></span>`;
+function CloseComponent () {
+  Component.call(this)
+  this.element.addEventListener('click', this.handleClick.bind(this))
 }
 
-module.exports = closeComponent;
+CloseComponent.prototype = Object.create(Component.prototype)
+CloseComponent.prototype.constructor = CloseComponent
+
+CloseComponent.prototype.render = function () {
+  return `<span class="close"></span>`
+}
+
+CloseComponent.prototype.handleClick = function () {
+  this.element.parentElement.remove()
+  this.emit('CloseComponent_Click')
+}
+
+module.exports = CloseComponent

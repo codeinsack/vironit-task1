@@ -1,20 +1,21 @@
-var EventEmitter = require('./eventEmitter');
+var EventEmitter = require('./eventEmitter')
 
-function Queue() {
-  EventEmitter.call(this);
-  this.count = 0;
+function Queue () {
+  EventEmitter.call(this)
+  this.count = 0
 }
 
-Queue.prototype = Object.create(EventEmitter.prototype);
-Queue.prototype.constructor = Queue;
+Queue.prototype = Object.create(EventEmitter.prototype)
+Queue.prototype.constructor = Queue
 
-Queue.prototype.add = function() {
-  this.count++;
-  this.emit('add', { content: this.count });
-};
+Queue.prototype.add = function () {
+  this.count++
+  this.emit('Queue_Add')
+}
 
-Queue.prototype.remove = function() {
-  this.emit('remove', { content: this.count });
-};
+Queue.prototype.remove = function () {
+  this.count--
+  this.emit('Queue_Remove')
+}
 
-module.exports = Queue;
+module.exports = Queue

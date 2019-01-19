@@ -1,30 +1,46 @@
-var Component = require('./component');
-var Atm = require('../core/atm');
-var closeComponent = require('./close');
+var uniqid = require('uniqid')
+var Component = require('./component')
+var CloseComponent = require('./close')
+var Atm = require('../core/atm')
 
-function AtmComponent(params) {
-  this.close = closeComponent();
-  Component.call(this, params);
-  this.atm = new Atm();
+function AtmComponent () {
+  Component.call(this)
+  this.id = uniqid()
+  var self = this
+  this.core = new Atm()
+  this.closeBtn = new CloseComponent()
+  this.element.appendChild(this.closeBtn.element)
+  this.closeBtn.on('CloseComponent_Click', () => this.emit('CloseComponent_Click', self))
+  this.core.on('Atm_MakeBusy', this.increment.bind(this))
+  this.core.on('Atm_MakeBusy', this.changeColor.bind(this))
+  this.core.on('Atm_MakeFree', this.changeColor.bind(this))
+  this.core.on('Atm_MakeBusy', this.changeCloseBtnVisibility.bind(this))
+  this.core.on('Atm_MakeFree', this.changeCloseBtnVisibility.bind(this))
 }
 
-AtmComponent.prototype = Object.create(Component.prototype);
-AtmComponent.prototype.constructor = AtmComponent;
+AtmComponent.prototype = Object.create(Component.prototype)
+AtmComponent.prototype.constructor = AtmComponent
 
-AtmComponent.prototype.makeHtml = function() {
-  Component.prototype.makeHtml.call(this);
-  this.html = this.html.replace(/>\d+</, `>${this.params.content}${this.close}<`);
-  this.render(this.html);
-};
+AtmComponent.prototype.render = function () {
+  return `<div class="rect atm">
+            0
+          </div>`
+}
 
-AtmComponent.prototype.hideCross = function() {
-  var id = this.close.slice(19, 27);
-  document.getElementById(id).style.display = 'none';
-};
+AtmComponent.prototype.changeColor = function () {
+  if (this.element.style.backgroundColor === 'red') {
+    this.element.style.backgroundColor = 'green'
+  } else {
+    this.element.style.backgroundColor = 'red'
+  }
+}
 
-AtmComponent.prototype.showCross = function() {
-  var id = this.close.slice(19, 27);
-  document.getElementById(id).style.display = 'block';
-};
+AtmComponent.prototype.changeCloseBtnVisibility = function () {
+  if (this.element.querySelector('.close').style.display !== 'none') {
+    this.element.querySelector('.close').style.display = 'none'
+  } else {
+    this.element.querySelector('.close').style.display = 'block'
+  }
+}
 
-module.exports = AtmComponent;
+module.exports = AtmComponent
