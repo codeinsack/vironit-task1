@@ -1,38 +1,43 @@
 {
-  "name": "js",
+  "name": "atm.js",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/js/main.js",
   "scripts": {
-    "start": "webpack-dev-server --config=config/webpack.dev.js",
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "start": "webpack-dev-server --open",
     "lint": "eslint src/",
-    "lint:fix": "eslint src --fix"
+    "lint:fix": "eslint src/ --fix"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/codeinsack/vironit-task1.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Eugene Furmanov",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/codeinsack/vironit-task1/issues"
   },
   "homepage": "https://github.com/codeinsack/vironit-task1#readme",
-  "dependencies": {
-    "uniqid": "^5.0.3"
-  },
   "devDependencies": {
     "css-loader": "^2.1.0",
-    "eslint": "^5.12.0",
+    "eslint": "^5.12.1",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
+    "node-sass": "^4.11.0",
+    "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
-    "webpack": "^4.28.1",
+    "webpack": "^4.29.0",
     "webpack-cli": "^3.2.1",
     "webpack-dev-server": "^3.1.14"
+  },
+  "dependencies": {
+    "express": "^4.16.4",
+    "uniqid": "^5.0.3"
   }
 }

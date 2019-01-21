@@ -52,10 +52,10 @@ body {
   color: white;
   outline: none;
   cursor: pointer;
-}
 
-.btn:hover {
-  background-color: rebeccapurple;
+  &:hover {
+    background-color: rebeccapurple;
+  }
 }
 
 .close {
@@ -66,28 +66,28 @@ body {
   height: 32px;
   opacity: 0.3;
   cursor: pointer;
-}
 
-.close:hover {
-  opacity: 1;
-}
+  &:hover {
+    opacity: 1;
+  }
 
-.close:before,
-.close:after {
-  position: absolute;
-  left: 15px;
-  content: ' ';
-  height: 33px;
-  width: 5px;
-  background-color: #333;
-}
+  &:before,
+  &:after {
+    position: absolute;
+    left: 15px;
+    content: ' ';
+    height: 33px;
+    width: 5px;
+    background-color: #333;
+  }
 
-.close:before {
-  transform: rotate(45deg);
-}
+  &:before {
+    transform: rotate(45deg);
+  }
 
-.close:after {
-  transform: rotate(-45deg);
+  &:after {
+    transform: rotate(-45deg);
+  }
 }
 
 .range {
@@ -96,9 +96,9 @@ body {
   margin-top: 50px;
   box-shadow: 0 0 10px rebeccapurple;
   padding: 10px;
-}
 
-.range label {
-  font-size: 25px;
-  margin-right: 20px;
+  label {
+    font-size: 25px;
+    margin-right: 20px;
+  }
 }

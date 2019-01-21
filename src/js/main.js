@@ -1,4 +1,3 @@
-require('./main.css')
 var utils = require('./core/utils')
 var queueGeneratorTimer = null
 var queueOverflowTimer = null
