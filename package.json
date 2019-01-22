@@ -4,11 +4,12 @@
   "description": "",
   "main": "src/js/main.js",
   "scripts": {
+    "start": "webpack-dev-server --open",
     "build": "webpack",
     "watch": "webpack --watch",
-    "start": "webpack-dev-server --open",
     "lint": "eslint src/",
-    "lint:fix": "eslint src/ --fix"
+    "lint:fix": "eslint src/ --fix",
+    "server": "nodemon src/js/server/app.js"
   },
   "repository": {
     "type": "git",
@@ -29,7 +30,9 @@
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "node-sass": "^4.11.0",
+    "nodemon": "^1.18.9",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "webpack": "^4.29.0",
@@ -37,6 +40,7 @@
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "express": "^4.16.4",
     "uniqid": "^5.0.3"
   }
