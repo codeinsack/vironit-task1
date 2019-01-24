@@ -3,12 +3,14 @@ var Component = require('./component')
 var CloseComponent = require('./close')
 var Atm = require('../core/atm')
 
-function AtmComponent () {
+function AtmComponent (id, count) {
   Component.call(this)
-  this.id = uniqid()
   var self = this
-  this.core = new Atm()
+  this.id = id || uniqid()
+  this.core = new Atm(id, count)
   this.closeBtn = new CloseComponent()
+  this.element.innerHTML = count || 0
+  this.element.id = this.id
   this.element.appendChild(this.closeBtn.element)
   this.closeBtn.on('CloseComponent_Click', () => this.emit('CloseComponent_Click', self))
   this.core.on('Atm_MakeBusy', this.increment.bind(this))
@@ -22,9 +24,7 @@ AtmComponent.prototype = Object.create(Component.prototype)
 AtmComponent.prototype.constructor = AtmComponent
 
 AtmComponent.prototype.render = function () {
-  return `<div class="rect atm">
-            0
-          </div>`
+  return `<div class="rect atm"></div>`
 }
 
 AtmComponent.prototype.changeColor = function () {

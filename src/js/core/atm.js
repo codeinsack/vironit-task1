@@ -1,9 +1,10 @@
 var utils = require('./utils')
 var EventEmitter = require('./eventEmitter')
 
-function Atm () {
+function Atm (id, count) {
   EventEmitter.call(this)
-  this.count = 0
+  this.id = id
+  this.count = count || 0
   this.isFree = true
 }
 

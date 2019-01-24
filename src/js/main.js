@@ -1,3 +1,4 @@
+var axios = require('axios')
 var utils = require('./core/utils')
 var queueGeneratorTimer = null
 var queueOverflowTimer = null
@@ -13,18 +14,23 @@ var rightContainer = document.querySelector('.container__right')
 var queueComponent = new QueueComponent()
 leftContainer.appendChild(queueComponent.element)
 
-var atmComponents = Array(3)
-  .fill(null)
-  .map(function () {
-    var atmComponent = new AtmComponent()
-    atmComponent.on('CloseComponent_Click', deleteAtm.bind(atmComponent))
-    atmComponent.core.on('Atm_MakeFree', findFreeAtm.bind(atmComponent))
-    leftContainer.appendChild(atmComponent.element)
-    return atmComponent
-  })
 queueComponent.core.on('Queue_Add', findFreeAtm)
 queueComponent.core.on('Queue_Add', checkQueueLength)
 queueComponent.core.on('Queue_Remove', startTimer)
+
+var atmComponents = []
+
+axios.get('http://localhost:3000')
+  .then(function (response) {
+    response.data.forEach(function (atm) {
+      var atmComponent = new AtmComponent(atm.id, atm.count)
+      atmComponent.on('CloseComponent_Click', deleteAtm.bind(atmComponent))
+      atmComponent.core.on('Atm_MakeFree', findFreeAtm.bind(atmComponent))
+      atmComponent.core.on('Atm_MakeBusy', updateServerAtm.bind(atmComponent, atmComponent))
+      leftContainer.appendChild(atmComponent.element)
+      atmComponents.push(atmComponent)
+    })
+  })
 
 var addComponent = new AddComponent()
 addComponent.on('AddComponent_Click', addAtm)
@@ -64,6 +70,13 @@ function findFreeAtm () {
 function deleteAtm (deleteAtm) {
   for (var i = 0; i < atmComponents.length; i++) {
     if (deleteAtm.id === atmComponents[i].id) {
+      axios.delete('http://localhost:3000/', { data: { id: deleteAtm.id } })
+        .then(function (response) {
+          console.log(response)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
       atmComponents.splice(i, 1)
     }
   }
@@ -72,8 +85,19 @@ function deleteAtm (deleteAtm) {
 function addAtm () {
   clearInterval(queueOverflowTimer)
   var newAtm = new AtmComponent()
+  axios.post('http://localhost:3000/', {
+    id: newAtm.id,
+    count: 0
+  })
+    .then(function (response) {
+      console.log(response)
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
   newAtm.on('CloseComponent_Click', deleteAtm)
   newAtm.core.on('Atm_MakeFree', findFreeAtm)
+  newAtm.core.on('Atm_MakeBusy', updateServerAtm.bind(newAtm, newAtm))
   leftContainer.appendChild(newAtm.element)
   atmComponents.push(newAtm)
   findFreeAtm()
@@ -119,4 +143,17 @@ function deleteLastAtm () {
   if (index < 1) return
   atmComponents[index].element.remove()
   atmComponents.splice(index, 1)
+}
+
+function updateServerAtm (atm) {
+  axios.put('http://localhost:3000/', {
+    id: atm.id,
+    count: atm.core.count
+  })
+    .then(function (response) {
+      console.log(response)
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
 }
