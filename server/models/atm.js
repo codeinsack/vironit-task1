@@ -19,6 +19,7 @@ function Atm (id, count, visits) {
   this.visits = visits
 }
 
+// странно, что addAtm не статичный, а остальные статичные методы
 Atm.prototype.addAtm = function () {
   var newAtm = this
   getAtmsFromFile(function (atms) {

@@ -25,6 +25,7 @@ window.addEventListener('hashchange', function () {
     homeRouteComponent.removeComponents()
     var id = window.location.hash.slice(1)
     atm = atms.find(el => el.id === id)
+    // а если атм не найден?
     atmRouteComponent = new AtmRouteComponent(atm)
     leftContainer.appendChild(atmRouteComponent.element)
   } else if (!window.location.hash) {

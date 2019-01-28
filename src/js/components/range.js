@@ -1,5 +1,6 @@
 var Component = require('./component')
 
+// можно было просто в компонент всунуть сразу 2 инпута, и не пришлось бы сиблинги использовать в других местах
 function RangeComponent () {
   var self = this
   Component.call(this)
@@ -16,9 +17,10 @@ RangeComponent.count = 0
 
 RangeComponent.prototype.render = function () {
   var one = RangeComponent.count
+  // закрывающий инпут не нужен
   return `<div class="range ${!one ? 'range-min' : 'range-max'}">
             <label>${!one ? 2 : 4}</label>
-            <input type="range" value="${!one ? 2 : 4}" min="${!one ? 0 : 1}" max="${!one ? 9 : 10}"></input>
+            <input type="range" value="${!one ? 2 : 4}" min="${!one ? 0 : 1}" max="${!one ? 9 : 10}"></input> 
           </div>`
 }
 

@@ -26,6 +26,7 @@ function HomeRouteComponent (parentElements) {
   queue.on('Queue_Add', checkQueueLength.bind(null, this))
   queue.on('Queue_Remove', startTimer)
 
+  // а если сервер не отвечает, где обработка ошибки?)
   axios.get('http://localhost:3000')
     .then(response => {
       response.data.forEach(serverAtm => {
@@ -111,6 +112,7 @@ function addAtm (context) {
   var newAtm = new Atm()
   newAtm.on('Atm_MakeFree', findFreeAtm)
   newAtm.on('Atm_MakeBusy', updateServerAtm.bind(null, newAtm))
+  // может пуш нужно делать, если удачный ответ пришел от сервера, что атм добавлен?
   atms.push(newAtm)
   axios.post('http://localhost:3000/', {
     id: newAtm.id,
@@ -129,6 +131,7 @@ function addAtm (context) {
 }
 
 function deleteAtm (atmComponent) {
+  // тут цикл пройдет в любом случае по всем атмам, а тебе нужен только один, подумай как оптимизировать
   for (var i = 0; i < atms.length; i++) {
     if (atmComponent.element.id === atms[i].id) {
       axios.delete('http://localhost:3000/', { data: { id: atmComponent.element.id } })
@@ -145,6 +148,7 @@ function changeRange (range) {
   var rangeMinElement, rangeMaxElement
   if (Array.from(range.element.classList).indexOf('range-min') !== -1) {
     rangeMinElement = range.input
+    // плохо привязываться к сиблингам. на 155 строке вообще жесть)
     rangeMaxElement = range.element.nextSibling.querySelector('input')
     if (rangeMinElement.value >= rangeMaxElement.value) {
       rangeMaxElement.value = parseInt(rangeMinElement.value) + 1

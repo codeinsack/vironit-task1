@@ -24,6 +24,9 @@ AtmComponent.prototype.render = function () {
 }
 
 AtmComponent.prototype.changeColor = function () {
+  // почему бы тернарный оператор не использовать?
+  // var bgColor = this.element.style.backgroundColor;
+  // this.element.style.backgroundColor = bgColor === 'red' ? 'green' : 'red';
   if (this.element.style.backgroundColor === 'red') {
     this.element.style.backgroundColor = 'green'
   } else {
@@ -32,6 +35,7 @@ AtmComponent.prototype.changeColor = function () {
 }
 
 AtmComponent.prototype.changeCloseBtnVisibility = function () {
+  // вот тут лучше querySelector сохранить в переменной, ну и тернарник был бы нагляднее ИМХО
   if (this.element.querySelector('.close').style.display !== 'none') {
     this.element.querySelector('.close').style.display = 'none'
   } else {
@@ -41,6 +45,7 @@ AtmComponent.prototype.changeCloseBtnVisibility = function () {
 
 AtmComponent.prototype.showDetailedInformation = function (event) {
   var element = event.target
+  // присвоил таргет элементу и не используешь. почему не element.tagName === 'DIV'
   if (event.target.tagName === 'DIV') {
     window.location.hash = element.id
   }

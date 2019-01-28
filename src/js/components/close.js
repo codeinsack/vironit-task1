@@ -13,6 +13,7 @@ CloseComponent.prototype.render = function () {
 }
 
 CloseComponent.prototype.handleClick = function () {
+  // так плохо, ты из этого компонента пытаешься изменить структуру внешних, ведь можно подписаться на клик
   this.element.parentElement.remove()
   this.emit('CloseComponent_Click')
 }

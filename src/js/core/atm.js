@@ -29,6 +29,7 @@ class Atm extends EventEmitter {
     this.emit('Atm_MakeFree')
   }
 
+  // метод не использует this, что он тогда вообще делает в классе?) самое место в utils
   formatDate (date) {
     const MONTHS = [
       'January', 'February', 'March',
