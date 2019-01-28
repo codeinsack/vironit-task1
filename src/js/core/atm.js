@@ -1,29 +1,49 @@
-var utils = require('./utils')
-var EventEmitter = require('./eventEmitter')
+const uniqid = require('uniqid')
+const utils = require('./utils')
 
-function Atm (id, count) {
-  EventEmitter.call(this)
-  this.id = id
-  this.count = count || 0
-  this.isFree = true
-}
+const EventEmitter = require('./eventEmitter')
 
-Atm.prototype = Object.create(EventEmitter.prototype)
-Atm.prototype.constructor = Atm
+class Atm extends EventEmitter {
+  constructor (id = uniqid(), count = 0, visits = []) {
+    super()
+    this.id = id
+    this.count = count
+    this.visits = visits
+    this.isFree = true
+  }
 
-Atm.prototype.makeBusy = function () {
-  var self = this
-  this.count++
-  this.isFree = false
-  this.emit('Atm_MakeBusy')
-  setTimeout(function () {
-    self.makeFree()
-  }, utils.randomInteger(1000, 3000))
-}
+  makeBusy () {
+    this.count++
+    this.isFree = false
+    this.startTime = new Date()
+    this.emit('Atm_MakeBusy')
+    setTimeout(() => {
+      this.makeFree()
+    }, utils.randomInteger(1000, 3000))
+  }
 
-Atm.prototype.makeFree = function () {
-  this.isFree = true
-  this.emit('Atm_MakeFree')
+  makeFree () {
+    const parsedDate = this.formatDate(this.startTime)
+    this.isFree = true
+    this.visits.push({ date: parsedDate, duration: (new Date() - this.startTime) / 1000 })
+    this.emit('Atm_MakeFree')
+  }
+
+  formatDate (date) {
+    const MONTHS = [
+      'January', 'February', 'March',
+      'April', 'May', 'June', 'July',
+      'August', 'September', 'October',
+      'November', 'December'
+    ]
+    const day = date.getDate()
+    const monthIndex = date.getMonth()
+    const year = date.getFullYear()
+    const hours = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
+    const minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+    const seconds = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
+    return `${day} ${MONTHS[monthIndex]} ${year}, ${hours}:${minutes}:${seconds}`
+  }
 }
 
 module.exports = Atm

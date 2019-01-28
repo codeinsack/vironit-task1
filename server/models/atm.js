@@ -13,9 +13,10 @@ var getAtmsFromFile = function (callback) {
   })
 }
 
-function Atm (id, count) {
+function Atm (id, count, visits) {
   this.id = id
   this.count = count
+  this.visits = visits
 }
 
 Atm.prototype.addAtm = function () {
@@ -31,23 +32,24 @@ Atm.prototype.addAtm = function () {
 
 Atm.deleteAtm = function (id) {
   getAtmsFromFile(atms => {
-    const updatedAtms = atms.filter(atm => atm.id !== id)
+    var updatedAtms = atms.filter(atm => atm.id !== id)
     fs.writeFile(p, JSON.stringify(updatedAtms), err => {
       console.log(err)
     })
   })
 }
 
-Atm.updateAtm = function (id, count) {
+Atm.updateAtm = function (id, count, visits) {
   getAtmsFromFile(atms => {
     var updatedAtms = atms.map(function (atm) {
       if (atm.id === id) {
         atm.count = count
+        atm.visits = visits
       }
       return atm
     })
     fs.writeFile(p, JSON.stringify(updatedAtms), err => {
-      console.log(err)
+      if (err) console.log(err)
     })
   })
 }

@@ -17,6 +17,7 @@ body {
 
 .container__right {
   justify-content: center;
+  overflow: auto;
 }
 
 .container__left {
@@ -40,6 +41,16 @@ body {
 
 .atm {
   background-color: green;
+
+  .atm-info {
+    margin-top: 70px;
+    padding: 0;
+    li {
+      font-size: 13px;
+      color: black;
+      list-style: none;
+    }
+  }
 }
 
 .btn {

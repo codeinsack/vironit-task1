@@ -23,7 +23,7 @@ app.get('/', function (req, res, next) {
 })
 
 app.post('/', function (req, res) {
-  var atm = new Atm(req.body.id, req.body.count)
+  var atm = new Atm(req.body.id, req.body.count, req.body.visits)
   atm.addAtm()
   res.send(req.body)
 })
@@ -34,8 +34,7 @@ app.delete('/', function (req, res) {
 })
 
 app.put('/', function (req, res) {
-  console.log(req.body.id, req.body.count)
-  Atm.updateAtm(req.body.id, req.body.count)
+  Atm.updateAtm(req.body.id, req.body.count, req.body.visits)
   res.send(req.body)
 })
 
